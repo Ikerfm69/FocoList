@@ -1,6 +1,7 @@
 package com.iker.focolist.services;
 
 import com.iker.focolist.models.User;
+import com.iker.focolist.repositories.TaskRepository;
 import com.iker.focolist.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +14,8 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TaskRepository taskRepository;
     @Autowired
     private BCryptPasswordEncoder encoder;
 
@@ -53,9 +56,12 @@ public class UserService {
     }
     public void deleteUser(Long id){
         User usuarioExistente = userRepository.findById(id).orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
-        if(!usuarioExistente.getUserName().equals(getCurrentUser().getUserName())){
+        User currentUser = getCurrentUser();
+        boolean isAdmin = currentUser.getRol() == User.Role.ADMIN;
+        if(!isAdmin && !usuarioExistente.getUserName().equals(currentUser.getUserName())){
             throw new RuntimeException("No tienes permisos para hacer esto");
         }
+        taskRepository.deleteAll(taskRepository.findByUser(usuarioExistente));
         userRepository.deleteById(id);
     }
 
