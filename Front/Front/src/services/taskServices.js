@@ -25,6 +25,14 @@ export const taskService = {
         return response.data;
     },
 
+    // 🔄 ACTUALIZAR ESTADO
+    updateStatus: async (id, status) => {
+        const response = await api.put(`/tasks/status/${id}`, JSON.stringify(status), {
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return response.data;
+    },
+
     // ❌ ELIMINAR TAREA
     deleteTask: async (id) => {
         const response = await api.delete(`/tasks/${id}`);
