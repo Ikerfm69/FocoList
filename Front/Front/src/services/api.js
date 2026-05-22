@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// En producción usamos la URL de Railway, en desarrollo el proxy /api
+const API_URL = import.meta.env.VITE_API_URL || '/api';
+
 const api = axios.create({
-    baseURL: '/api',
+    baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json'
     }
@@ -27,7 +30,7 @@ api.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem('token');
-            
+
             localStorage.removeItem('user_data');
             localStorage.removeItem('user_credentials');
             localStorage.removeItem('user_id');

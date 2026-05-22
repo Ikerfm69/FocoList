@@ -27,9 +27,9 @@ export const taskService = {
 
     // 🔄 ACTUALIZAR ESTADO
     updateStatus: async (id, status) => {
-        const response = await api.put(`/tasks/status/${id}`, JSON.stringify(status), {
-            headers: { 'Content-Type': 'application/json' }
-        });
+        // Enviamos el estado como un parámetro en la URL (?status=VALOR)
+        // Esto suele evitar problemas de formato JSON con enumerados en Spring
+        const response = await api.put(`/tasks/status/${id}?status=${status}`);
         return response.data;
     },
 
